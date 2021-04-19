@@ -37,14 +37,32 @@
                     frame.origin.x = -left;
                     frame.size.width += left;
                     subview.frame = frame;
-                }
-                else {
+                    for (UIView *sv in subview.subviews) {/// 左边偏移后 将titleLabel往右偏移
+                        if ([sv isKindOfClass:UILabel.class]) {
+                            NSLayoutConstraint *constraint = [self titleLabelCenterX:subview];
+                            constraint.constant = left/2;
+                            break;
+                        }
+                    }
+                } else {
                     subview.layoutMargins = UIEdgeInsetsMake(0, space, 0, subview.layoutMargins.right);//可修正iOS11之后的偏移
                 }
                 break;
             }
         }
     }
+}
+
+- (NSLayoutConstraint *)titleLabelCenterX:(UIView *)superView {
+    NSLayoutConstraint *co;
+    NSArray *constraints = superView.constraints;
+    for (NSLayoutConstraint *constraint in constraints) {
+        if ([constraint.firstItem isKindOfClass:UILabel.class] && constraint.firstAttribute == NSLayoutAttributeCenterX) {
+            co = constraint;
+            break;
+        }
+    }
+    return co;
 }
 
 @end
